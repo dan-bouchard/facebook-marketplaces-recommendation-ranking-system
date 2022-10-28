@@ -11,7 +11,7 @@ Cleaning the tabular data which has been scrapped from Facebook, with informatio
  - Product Price
  - Location of the seller
 
- Also, cleaning the images by converting them all to 3-channel RGB and size 512x512.
+ Cleaning the images by converting them all to 3-channel RGB and size 512x512.
 
 **Original**                                              | **Cleaned**
 ----------------------------------------------------------|-------------------------------------------------------
