@@ -6,3 +6,4 @@ __pycache__/
 Images.csv
 Products.csv
 images_fb.zip
+cleaned_images/*
