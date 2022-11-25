@@ -70,14 +70,14 @@ def generate_dataloaders(seed=42, batch_size = 64):
     training_idx, test_idx = train_test_split(np.arange(merged_df.shape[0]), test_size=0.15, shuffle=True, stratify=merged_df.category_0)
     train_idx, valid_idx = train_test_split(training_idx, test_size=0.15/0.85, shuffle=True, stratify=merged_df.loc[training_idx].category_0)
 
-    train_dataset = Dataset(merged_df.loc[train_idx], './cleaned_images/', encoder)
-    val_dataset = Dataset(merged_df.loc[valid_idx], './cleaned_images/', encoder)
-    test_dataset = Dataset(merged_df.loc[test_idx], './cleaned_images/', encoder)
+    train_dataset = Dataset(merged_df.loc[train_idx], './cleaned_images_64/', encoder)
+    val_dataset = Dataset(merged_df.loc[valid_idx], './cleaned_images_64/', encoder)
+    test_dataset = Dataset(merged_df.loc[test_idx], './cleaned_images_64/', encoder)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     dataloaders = {'train': train_dataloader, 
-                    'vaidation': val_dataloader,
+                    'validation': val_dataloader,
                     'test': test_dataloader}
     return dataloaders
