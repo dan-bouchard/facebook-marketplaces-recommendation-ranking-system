@@ -41,9 +41,9 @@ Cleaning the tabular data which has been scrapped from Facebook, with informatio
     - 2 Convolutional layers
     - 3 Fully Connected Linear layers
 
-**Validation Log Loss**  | **Validation Accuracy**   
+**Validation Log Loss**  | <img src="./imgs/cnn_val_loss.png" width="400" />    
 -------------------------|-------------------------
-<img src="./imgs/cnn_val_loss.png" width="400" />  |<img src="./imgs/cnn_val_acc.png" width="400" />
+**Validation Accuracy** |<img src="./imgs/cnn_val_acc.png" width="400" />
 
  - Used transfer learnining with a pre-trained ResNet-50 model to train a new Fully Connected Linear layer
  - Performance was unfortunately not as promising as the CNN model
