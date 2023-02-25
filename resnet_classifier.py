@@ -6,19 +6,21 @@ import torch
 import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.models import resnet50
+from torchvision.models.resnet import ResNet50_Weights
 
 class TransferLearning(torch.nn.Module):
     def __init__(self):
         super().__init__()
-        self.layers = resnet50()
+        self.layers = resnet50(weights=ResNet50_Weights.DEFAULT)
         for param in self.layers.parameters():
             param.requires_grad = False
         fc_inputs = self.layers.fc.in_features
+        fc_outputs = self.layers.fc.out_features
         # print(self.feature_extractor)
         linear_layers = torch.nn.Sequential(
-            torch.nn.Linear(fc_inputs, 256),
+            torch.nn.Linear(fc_inputs, fc_outputs),
             torch.nn.ReLU(),
-            torch.nn.Linear(256, 13)
+            torch.nn.Linear(fc_outputs, 13)
         )
         self.layers.fc = linear_layers
     
