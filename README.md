@@ -45,7 +45,15 @@ Cleaning the tabular data which has been scrapped from Facebook, with informatio
 -------------------------|-------------------------
 **Validation Accuracy** |<img src="./imgs/cnn_val_acc.png" width="700" />
 
+## Transfer learning (ResNet-50)
+
  - Used transfer learnining with a pre-trained ResNet-50 model to train a new Fully Connected Linear layer
- - Performance was unfortunately not as promising as the CNN model
+ - Performance was much better than with the previous neural network
+ - Model hadn't fully converged during training, so such be trained for longer
+
+ **Validation Log Loss**  | <img src="./imgs/resnet50_val_loss.png" width="700" />    
+-------------------------|-------------------------
+**Validation Accuracy** |<img src="./imgs/resnet50_val_acc.png" width="700" />
+
  - Evaluated the final metrics of both model on the test set
  - Created an image processor script which predicts the category of a given image
