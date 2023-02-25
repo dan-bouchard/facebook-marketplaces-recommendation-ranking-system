@@ -55,5 +55,12 @@ Cleaning the tabular data which has been scrapped from Facebook, with informatio
 -------------------------|-------------------------
 **Validation Accuracy** |<img src="./imgs/resnet50_val_acc.png" width="700" />
 
- - Evaluated the final metrics of both model on the test set
- - Created an image processor script which predicts the category of a given image
+- Created a feature extraction model by removing the final linear layer of the network
+- Evaluated the final metrics of both model on the test set
+    - First CNN Model:
+        - Log-Loss: 2.46
+        - Accuracy: 16.6%
+    - ResNet-50 Model:
+        - Log-Loss: 2.17
+        - Accuracy: 30.4%
+- Created an image processor script which predicts the category of a given image
