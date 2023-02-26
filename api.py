@@ -1,7 +1,6 @@
-import pickle
 import uvicorn
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel
 from PIL import Image
 from fastapi import File
@@ -11,6 +10,8 @@ import torch
 import torch.nn as nn
 from pydantic import BaseModel
 import json
+import numpy as np
+import faiss
 ##############################################################
 # TODO                                                       #
 # Import your image and text processors here                 #
@@ -18,6 +19,8 @@ import json
 
 from resnet_classifier import TransferLearning
 from clean_images import resize_image, image_processor
+# from faiss_funcs import get_similarity_index
+from dataset import import_tabular_data
 
 
 def get_image_decoder():
@@ -90,11 +93,26 @@ class ImageClassifier(TransferLearning):
 
 class FaissSearchIndex():
     def __init__(self) -> None:
-        pass
-
-
-
-
+        self.image_embeddings = np.load('./image_embeddings.npy')
+        self.d = self.image_embeddings.shape[1]
+        self.index = faiss.IndexFlatL2(self.d)
+        self.index.add(self.image_embeddings)
+        data_df = import_tabular_data()
+        self.decoder = dict(zip(list(data_df.image_id.values), list(data_df.index)))
+        self.encoder = dict(zip(list(data_df.index), list(data_df.image_id.values)))
+    
+    def get_similarity_index(self, image_id, k=2):
+        idx = self.decoder[image_id]
+        xq = self.image_embeddings[idx,:]
+        xq = xq[np.newaxis, :]
+        D, I = self.index.search(xq, k)
+        if k == 2:
+            return self.encoder[I[0][-1]]
+        else:
+            return I[0]
+    
+    def get_encoded_image_id(self, idx):
+        return self.encoder[idx]
 
 
 # class CombinedModel(nn.Module):
@@ -160,6 +178,11 @@ try:
 except:
     raise OSError("No Image model found. Check that you have the encoder and the model in the correct location")
 
+try:
+    faiss_mdl = FaissSearchIndex()
+except:
+    raise OSError('No image embeddings found, check that they are in the right location')
+
 # try:
 ##############################################################
 # TODO                                                       #
@@ -187,15 +210,15 @@ except:
 # except:
 #     raise OSError("No Text processor found. Check that you have the encoder and the model in the correct location")
 
-try:
-##############################################################
-# TODO                                                       #
-# Initialize the image processor that you will use to process#
-# the image that you users will send to your API              #
-##############################################################
-    pass
-except:
-    raise OSError("No Image processor found. Check that you have the encoder and the model in the correct location")
+# try:
+# ##############################################################
+# # TODO                                                       #
+# # Initialize the image processor that you will use to process#
+# # the image that you users will send to your API              #
+# ##############################################################
+#     pass
+# except:
+#     raise OSError("No Image processor found. Check that you have the encoder and the model in the correct location")
 
 app = FastAPI()
 print("Starting server")
@@ -280,7 +303,9 @@ def predict_image(image: UploadFile = File(...)):
 def faiss_similar_images(image: UploadFile = File(...)):
     # pil_image = Image.open(image.file)
     image_id = image.filename[:-4]
-    print(image_id)
+    similar_image_id = faiss_mdl.get_similarity_index(image_id)
+    output_filename = similar_image_id + '.jpg'
+    output_path = './raw_images/' + output_filename
     
     ##############################################################
     # TODO                                                       #
@@ -290,10 +315,7 @@ def faiss_similar_images(image: UploadFile = File(...)):
     # and the probabilities                                      #
     ##############################################################
 
-    return JSONResponse(content={
-    "Category": filename, # Return the category here
-    "Probabilities": "" # Return a list or dict of probabilities here
-        })
+    return FileResponse(path=output_path)
     
 if __name__ == '__main__':
   uvicorn.run("api:app", host="0.0.0.0", port=8080)
