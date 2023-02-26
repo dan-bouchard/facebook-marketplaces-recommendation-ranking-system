@@ -11,3 +11,5 @@ cleaned_images_64/*
 runs/*
 *.pth
 test/*
+image_embeddings.json
+image_embeddings.npy
