@@ -278,9 +278,10 @@ def predict_image(image: UploadFile = File(...)):
 
 @app.post('/predict/suggest_similar_images')
 def faiss_similar_images(image: UploadFile = File(...)):
-    pil_image = Image.open(image.file)
-    filename = image.filename
-    print(filename)
+    # pil_image = Image.open(image.file)
+    image_id = image.filename[:-4]
+    print(image_id)
+    
     ##############################################################
     # TODO                                                       #
     # Process the input and use it as input for the image model  #
