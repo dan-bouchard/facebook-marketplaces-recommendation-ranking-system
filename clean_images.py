@@ -2,6 +2,8 @@ import os
 from tqdm import tqdm
 from PIL import Image
 from zipfile import ZipFile
+from torchvision.transforms import ToTensor
+import torch
 
 def resize_image(im, final_size=512):
     im = im.resize((final_size, final_size))
@@ -24,3 +26,9 @@ def generate_resized_images(final_size=512):
             image = myzip.open(img_filename)
             im = resize_image(Image.open(image), final_size)
             im.save(f'./cleaned_images_{final_size}/{img_filename[7:]}')
+
+def image_processor(img):
+    transform = ToTensor()
+    img_tensor = transform(img)
+    img_tensor_reshape = torch.unsqueeze(img_tensor, dim=0)
+    return img_tensor_reshape
