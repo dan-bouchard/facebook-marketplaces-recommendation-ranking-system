@@ -9,6 +9,8 @@ from fastapi import Form
 import torch
 import torch.nn as nn
 from pydantic import BaseModel
+from zipfile import ZipFile
+import os
 import json
 import numpy as np
 import faiss
@@ -301,19 +303,18 @@ def predict_image(image: UploadFile = File(...)):
 
 @app.post('/predict/suggest_similar_images')
 def faiss_similar_images(image: UploadFile = File(...)):
-    # pil_image = Image.open(image.file)
+    
     image_id = image.filename[:-4]
     similar_image_id = faiss_mdl.get_similarity_index(image_id)
     output_filename = similar_image_id + '.jpg'
+
     output_path = './raw_images/' + output_filename
-    
-    ##############################################################
-    # TODO                                                       #
-    # Process the input and use it as input for the image model  #
-    # image.file is the image that the user sent to your API     #
-    # Apply the corresponding methods to compute the category    #
-    # and the probabilities                                      #
-    ##############################################################
+    if not os.path.exists(output_path):
+        zipfile_path = 'images/' + output_filename
+        if not os.path.exists('./raw_images'):
+            os.mkdir('./raw_images')
+        with ZipFile('./images_fb.zip') as myzip:
+            myzip.extract(zipfile_path, './raw_images')
 
     return FileResponse(path=output_path)
     
