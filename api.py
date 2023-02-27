@@ -315,6 +315,9 @@ def faiss_similar_images(image: UploadFile = File(...)):
             os.mkdir('./raw_images')
         with ZipFile('./images_fb.zip') as myzip:
             myzip.extract(zipfile_path, './raw_images')
+        os.replace(f'./raw_images/images/{output_filename}', output_path)
+        os.rmdir('./raw_images/images')
+
 
     return FileResponse(path=output_path)
     
